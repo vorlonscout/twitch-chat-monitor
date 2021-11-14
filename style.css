@@ -4,7 +4,6 @@ body {
   margin: 0;
   color: #eee;
   color: var(--text-color);
-  font-size: 32px;
   font-size: var(--font-size);
   font-family: "Open Sans Condensed", sans-serif;
 }
@@ -18,8 +17,13 @@ body.hide-cursor {
 }
 
 #chat-container {
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: hidden;
   height: 100vh;
+}
+
+.overflow-y-scroll {
+  overflow-y: scroll !important;
 }
 
 #chat {
@@ -36,9 +40,8 @@ body.hide-cursor {
 }
 
 #chat > div {
-  padding: 3px 1px 3px 6px;
-  line-height: 35px;
-  line-height: calc(var(--font-size) + 3px);
+  padding: calc(var(--font-size) * 0.1) 1px calc(var(--font-size) * 0.1) calc(var(--font-size) * 0.188);
+  line-height: 1.1em;
   border-bottom: #444 solid 1px;
   border-bottom-color: var(--separator-color);
 }
@@ -52,7 +55,7 @@ body.hide-cursor {
 }
 
 #chat .timestamp {
-  margin-right: 5px;
+  margin-right: calc(var(--font-size) * 0.156);
 }
 
 #chat img {
@@ -66,13 +69,14 @@ body.hide-cursor {
 
 #chat img.user-image {
   vertical-align: bottom;
-  padding: 4px;
+  padding: calc(var(--font-size) * 0.125);
 }
 
 #chat .chat-user:after {
   color: #eee;
   color: var(--text-color);
   font-weight: 300;
+  margin-top: calc(var(--font-size) * -0.063);
 }
 
 #chat .chat-user:not(.action):after {
@@ -84,9 +88,44 @@ body.hide-cursor {
 }
 
 #chat .chat-user {
-  color: green;
+  color: #00a000;
   color: var(--user-color);
   font-weight: 700;
+}
+
+#chat .chat-user.broadcaster {
+  color: #00ffff;
+  color: var(--broadcaster-color);
+}
+
+#chat .chat-user.alert {
+  color: #ffa500;
+  color: var(--alert-color);
+}
+
+#chat .chat-user.staff {
+  color: #00b5e0;
+  color: var(--staff-color);
+}
+
+#chat .chat-user.bot {
+  color: #e060a0;
+  color: var(--bot-color);
+}
+
+#chat .chat-user.notable {
+  color: #ffd040;
+  color: var(--notable-color);
+}
+
+#chat .chat-user.highlight {
+  color: #ffff00;
+  color: var(--highlight-color);
+}
+
+#chat .chat-user.vip {
+  color: #80e800;
+  color: var(--vip-color);
 }
 
 #chat .chat-user.moderator {
@@ -95,12 +134,16 @@ body.hide-cursor {
 }
 
 #chat.align-messages .chat-user {
-  flex-basis: 270px;
+  flex-basis: calc(var(--font-size) * 9);
   flex-shrink: 0;
   text-overflow: ellipsis;
   overflow: hidden;
   text-align: right;
-  padding-right: 5px;
+  padding-right: calc(var(--font-size) * 0.156);
+}
+
+#chat.align-messages .chat-user:hover {
+  overflow: visible;
 }
 
 #chat.align-messages div {
@@ -111,15 +154,19 @@ body.hide-cursor {
   display: block;
 }
 
-#chat > div.highlight, #chat > div.notice {
-  padding-left: 12px;
-  border-left: 6px solid;
+#chat > div.highlight, #chat > div.notice, #chat > div.subscription {
+  padding-left: calc(var(--font-size) * 0.375);
+  border-left: calc(var(--font-size) * 0.188) solid;
+}
+
+#chat.align-messages > div.highlight {
+  padding-left: 0;
 }
 
 #chat > div.highlight {
-  border-left-color: #731180;
+  border-left-color: #ffff00;
   border-left-color: var(--highlight-color);
-  background-color: #73118030;
+  background-color: #240528;
   background-color: var(--highlight-background-color);
 }
 
@@ -142,7 +189,7 @@ body.hide-cursor {
 }
 
 #chat .cheer, #chat .cheer img {
-  margin-right: 5px;
+  margin-right: calc(var(--font-size) * 0.156);
   font-weight: 700;
 }
 
@@ -163,8 +210,9 @@ body.hide-cursor {
 }
 
 #chat .emoticon {
-  width: 28px;
-  height: 28px;
+  height: calc(var(--font-size) * 1.25);
+  width: calc(var(--font-size) * 1.25);
+  margin: calc(var(--font-size) * -0.188) 0px calc(var(--font-size) * -0.188) 0px !important;
 }
 
 #chat .counter {
@@ -172,7 +220,7 @@ body.hide-cursor {
   float: right;
   font-size: 80%;
   transition: 1s;
-  padding-right: 10px;
+  padding-right: calc(var(--font-size) * 0.313);
 }
 #chat .counter.bump {
   transition: 0.1s;
@@ -182,8 +230,8 @@ body.hide-cursor {
 #settings-wheel {
   position: absolute;
   z-index: 10;
-  right: 5px;
-  bottom: 5px;
+  right: calc(var(--font-size) * 0.156);
+  bottom: calc(var(--font-size) * 0.156);
   opacity: 0.3;
   cursor: pointer;
 }
@@ -192,17 +240,17 @@ body.hide-cursor {
 }
 
 .reverse-order #settings-wheel {
-  top: 5px;
+  top: calc(var(--font-size) * 0.156);
   bottom: auto;
 }
 
 #fps {
   position: absolute;
-  right: 15px;
-  top: 15px;
+  right: calc(var(--font-size) * 0.469);
+  top: calc(var(--font-size) * 0.469);
   border: 2px solid #eee;
   border-color: var(--text-color);
-  border-radius: 10px;
+  border-radius: calc(var(--font-size) * 0.313);
   width: 3em;
   text-align: center;
   background-color: black;
@@ -212,12 +260,12 @@ body.hide-cursor {
 
 .reverse-order #fps {
   top: auto;
-  bottom: 15px;
+  bottom: calc(var(--font-size) * 0.469);
 }
 
 .notifications {
   position: absolute;
-  bottom: 10px;
+  bottom: calc(var(--font-size) * 0.313);
   left: 0;
   right: 0;
   display: flex;
@@ -226,15 +274,15 @@ body.hide-cursor {
 
 .reverse-order .notifications {
   bottom: auto;
-  top: 10px;
+  top: calc(var(--font-size) * 0.313);
 }
 
 .notifications div {
   border: 2px solid #eee;
   border-color: var(--text-color);
-  padding: 5px;
-  margin: 5px;
-  border-radius: 10px;
+  padding: calc(var(--font-size) * 0.156);
+  margin: calc(var(--font-size) * 0.156);
+  border-radius: calc(var(--font-size) * 0.313);
   background-color: black;
   background-color: var(--background-color);
   opacity: 0.9;
@@ -242,11 +290,11 @@ body.hide-cursor {
 
 #settings {
   position: absolute;
-  right: 20px;
-  bottom: 32px;
-  left: 20px;
-  margin-bottom: 15px;
-  padding: 20px;
+  right: calc(var(--font-size) * 0.25);
+  bottom: var(--font-size);
+  left: calc(var(--font-size) * 0.25);
+  margin-bottom: calc(var(--font-size) * 0.469);
+  padding: calc(var(--font-size) * 0.313);
   max-height: 50vh;
   overflow-y: auto;
   border: 3px solid #444;
@@ -258,17 +306,18 @@ body.hide-cursor {
 }
 
 .reverse-order #settings {
-  top: 60px;
+  top: calc(var(--font-size) * 1.875);
   bottom: auto;
 }
 
 #settings h2 {
   margin-top: 0;
+  margin-bottom: calc(var(--font-size) * 0.313);
   text-align: center;
 }
 
 #settings h3 {
-  padding: 5px 20px;
+  padding: calc(var(--font-size) * 0.188) calc(var(--font-size) * 0.188);
   background-color: #000;
   border-color: var(--background-color);
   margin: 0;
@@ -277,25 +326,76 @@ body.hide-cursor {
 #settings > div {
   background-color: #111;
   background-color: var(--odd-background-color);
-  padding: 10px;
+  padding: 0px;
 }
 
 #settings .fields {
   display: grid;
-  grid-gap: 10px;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-gap: calc(var(--font-size) * 0.313);
+  grid-template-columns: repeat(auto-fill, minmax(calc(var(--font-size) * 6.75), 1fr));
 }
 
-#settings .fields.style > div {
+#settings .fields.style {
+  grid-template-columns: repeat(auto-fill, minmax(calc(var(--font-size) * 3.375), 1fr));
+  font-size: 0.8em;
+  line-height: 1.5em;
+}
+
+#settings .fields.style-1plus {
+  grid-template-columns: calc(var(--font-size) * 3.375) auto;
+  font-size: 0.8em;
+  line-height: 1.5em;
+}
+
+#settings .fields.style-2plus {
+  grid-template-columns: calc(var(--font-size) * 3.375) calc(var(--font-size) * 3.375) auto;
+  font-size: 0.8em;
+  line-height: 1.5em;
+}
+
+#settings .fields.style-fullwidthinput {
+  grid-template-columns: auto;
+  font-size: 0.8em;
+  line-height: 1.5em;
+}
+
+#settings .fields.style-hotkeys {
+  grid-template-columns: calc(var(--font-size) * 6.75) auto;
+  font-size: 0.8em;
+  line-height: 1.5em;
+}
+
+#settings .fields.style-1plus input[type="number"],
+#settings .fields.style-1plus input[type="text"],
+#settings .fields.style-1plus input[type="submit"],
+#settings .fields.style-2plus input[type="number"],
+#settings .fields.style-2plus input[type="text"],
+#settings .fields.style-2plus input[type="submit"],
+#settings .fields.style-fullwidthinput input[type="number"],
+#settings .fields.style-fullwidthinput input[type="text"],
+#settings .fields.style-fullwidthinput input[type="submit"] {
+  width: calc(100% - var(--font-size) * 0.969) !important;
+  font-size: 0.8em;
+}
+
+#settings .fields.style > div,
+#settings .fields.style-1plus > div,
+#settings .fields.style-2plus > div {
   text-align: center;
 }
 
+#settings .fields.style-1plus > div:last-of-type,
+#settings .fields.style-2plus > div:last-of-type {
+  text-align: left;
+  padding-left: calc(var(--font-size) * 0.969);
+}
+
 #settings .subfield {
-  margin-top: 5px;
-  margin-left: 40px;
-  border-left: 5px solid #eee;
+  margin-top: calc(var(--font-size) * 0.156);
+  margin-left: calc(var(--font-size) * 1.25);
+  border-left: calc(var(--font-size) * 0.156) solid #eee;
   border-color: var(--text-color);
-  padding-left: 10px;
+  padding-left: calc(var(--font-size) * 0.313);
 }
 
 #settings input, #settings button {
@@ -314,8 +414,8 @@ body.hide-cursor {
   border: 2px solid #eee;
   border-color: var(--text-color);
   text-align: center;
-  width: 32px;
-  height: 32px;
+  width: var(--font-size);
+  height: var(--font-size);
   cursor: pointer;
 }
 
@@ -325,9 +425,9 @@ body.hide-cursor {
 }
 
 #settings input[type="number"], #settings input[type="text"], #settings input[type="submit"], #settings button {
-  height: 32px;
-  padding: 0 5px;
-  border: 2px solid #eee;
+  height: var(--font-size);
+  padding: 0 calc(var(--font-size) * 0.156);
+  border: 1px solid #6a6a6a;
   border-color: var(--text-color);
   background-color: black;
   background-color: var(--background-color);
@@ -343,12 +443,13 @@ body.hide-cursor {
 
 #settings input[type="color"] {
   appearance: none;
-  border: 2px solid #eee;
-  border-color: var(--text-color);
+  border: 0px;
+  margin-top: calc(var(--font-size) * 0.125);
   background-color: black;
   background-color: var(--background-color);
-  padding: 5px;
-  height: 32px;
+  padding: 0px;
+  height: calc(var(--font-size) * 1.1);
+  width: calc(var(--font-size) * 1.563);
   cursor: pointer;
 }
 

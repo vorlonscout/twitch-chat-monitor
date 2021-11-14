@@ -6,6 +6,7 @@
     <title>Chat Monitor</title>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700&display=swap" rel="stylesheet" type="text/css"/>
     <link href="style.css" rel="stylesheet" type="text/css"/>
+    <link rel="shortcut icon" type="image/png" href="twitch-favicon.png">
   </head>
   <body>
     <div id="curtain" class="hidden">
@@ -19,29 +20,86 @@
     </div>
     <div id="settings" class="hidden">
       <h2>Settings</h2>
-      <div>
+      <div id="channel-select" class="hidden">
         <h3>Twitch</h3>
         <div><form action="#"><label>Twitch channel: <input type="text" id="settings-channel" required="required" placeholder="Name only (e.g. desertbus)" size="26"/></label> <input type="submit" value="Join"/></form></div>
       </div>
       <div>
-        <h3>Style</h3>
+        <h3>Basic Styles</h3>
         <div class="fields style">
+          <div>Text<br/><input type="color" id="settings-text-color"/></div>
           <div>Background<br/><input type="color" id="settings-background-color"/></div>
           <div>Odd rows<br/><input type="color" id="settings-odd-background-color"/></div>
           <div>Separator<br/><input type="color" id="settings-separator-color"/></div>
-          <div>Text<br/><input type="color" id="settings-text-color"/></div>
-          <div>User<br/><input type="color" id="settings-user-color"/></div>
-          <div>Moderator<br/><input type="color" id="settings-moderator-color"/></div>
-          <div>Channel<br/><input type="color" id="settings-channel-color"/></div>
           <div>Notice<br/><input type="color" id="settings-notice-color"/></div>
-          <div>Highlight<br/><input type="color" id="settings-highlight-color"/></div>
+          <div>Subscription<br/><input type="color" id="settings-subscription-color"/></div>
+          <div>User<br/><input type="color" id="settings-user-color"/></div>
+          <div>VIP<br/><input type="color" id="settings-vip-color"/></div>
+          <div>Moderator<br/><input type="color" id="settings-moderator-color"/></div>
         </div>
-        <div><label><input type="checkbox" id="settings-hide-cursor"/> Hide cursor when it hasn't moved for 4 seconds</label></div>
-        <div><label><input type="checkbox" id="settings-align-messages"/> Line up messages vertically</label></div>
-        <div><label>Font size: <input type="number" size="3" max="200" min="4" id="settings-font-size"/> pixels</label></div>
+      </div>
+      <div>
+        <h3>Broadcaster Styles</h3>
+        <div class="fields style-2plus">
+          <div>Text<br/><input type="color" id="settings-broadcaster-color"/></div>
+          <div>Background<br/><input type="color" id="settings-broadcaster-background-color"/></div>
+          <div><label>Users to treat as Broadcasters</label><br/><input type="text" placeholder="usernames separated by commas" id="settings-broadcaster-users" size="60"/></div>
+        </div>
+      </div>
+      <div>
+        <h3>Staff User Styles</h3>
+        <div class="fields style-1plus">
+          <div>Text<br/><input type="color" id="settings-staff-color"/></div>
+          <div><label>Users to treat as Staff<br/><input type="text" placeholder="usernames separated by commas" id="settings-staff-users" size="78"/></label></div>
+        </div>
+      </div>
+      <div>
+        <h3>Alert User Styles</h3>
+        <div class="fields style-2plus">
+          <div>Text<br/><input type="color" id="settings-alert-color"/></div>
+          <div>Background<br/><input type="color" id="settings-alert-background-color"/></div>
+          <div><label>Alert Users<br/><input type="text" placeholder="usernames separated by commas" id="settings-alert-users" size="60"/></label></div>
+        </div>
+      </div>
+      <div>
+        <h3>Notable User Styles</h3>
+        <div class="fields style-2plus">
+          <div>Text<br/><input type="color" id="settings-notable-color"/></div>
+          <div>Background<br/><input type="color" id="settings-notable-background-color"/></div>
+          <div><label>Notable Users<br/><input type="text" placeholder="usernames separated by commas" id="settings-notable-users" size="60"/></label></div>
+        </div>
+      </div>
+      <div>
+        <h3>Highlight Styles</h3>
+        <div class="fields style-2plus">
+          <div>Text<br/><input type="color" id="settings-highlight-color"/></div>
+          <div>Background<br/><input type="color" id="settings-highlight-background-color"/></div>
+          <div><label>Highlight messages from<br /><input type="text" placeholder="usernames separated by commas" id="settings-highlight-users" size="60"/></label></div>
+        </div>
+        <div class="fields style-2plus">
+          <div>&nbsp;</div>
+          <div>&nbsp;</div>
+          <div><label>Highlight messages containing<br /><input type="text" placeholder="keyphrases separated by commas" id="settings-highlight-keyphrases" size="60"/></label></div>
+        </div>
+      </div>
+      <div>
+        <h3>Bot User Styles</h3>
+        <div class="fields style-1plus">
+          <div>Text<br/><input type="color" id="settings-bot-color"/></div>
+          <div><label>Bot Users<br/><input type="text" placeholder="usernames separated by commas" id="settings-bot-users" size="77"/></label></div>
+        </div>
+      </div>
+      <div>
+        <h3>Blocked Users (messages will not be shown)</h3>
+        <div class="fields style-fullwidthinput">
+          <div><input type="text" placeholder="usernames separated by commas" id="settings-block-users" size="66"/></label></div>
+        </div>
       </div>
       <div>
         <h3>Chat Behavior</h3>
+        <div id="font-size-select" class="hidden"><label>Font size: <input type="number" size="3" max="200" min="4" id="settings-font-size"/> pixels</label></div>
+        <div><label><input type="checkbox" id="settings-hide-cursor"/> Hide cursor when it hasn't moved for 4 seconds</label></div>
+        <div><label><input type="checkbox" id="settings-align-messages"/> Line up messages vertically</label></div>
         <div>
           <label><input type="checkbox" id="settings-limit-message-rate"/> Limit the rate at which messages appear</label>
           <div class="subfield hidden"><label>Amount of messages per second: <input type="number" size="2" max="50" min="1" id="settings-message-rate"/></label></div>
@@ -73,8 +131,6 @@
             <option value="long12">11:59:00 PM</option>
           </select></label>
         </div>
-        <div><label>Highlight messages from <input type="text" placeholder="usernames separated by commas" id="settings-highlight-users" size="35"/></label></div>
-        <div><label>Highlight messages containing <input type="text" placeholder="keyphrases separated by commas" id="settings-highlight-keyphrases" size="35"/></label></div>
       </div>
       <div>
         <h3>Message Types</h3>
@@ -92,9 +148,17 @@
       </div>
       <div>
         <h3>Hotkeys overview</h3>
-        <div class="fields">
-          <div>Ctrl+Shift+H<br/>Hide/show chat</div>
-          <div>Ctrl+Shift+S<br/>Open/close settings</div>
+        <div class="fields style-hotkeys">
+          <div>Ctrl+Shift+H</div><div>Hide/show chat</div>
+        </div>
+        <div class="fields style-hotkeys">
+          <div>Ctrl+Shift+S</div><div>Open/close settings</div>
+        </div>
+        <div class="fields style-hotkeys">
+          <div>Ctrl+Shift+L</div><div>Reload settings</div>
+        </div>
+        <div class="fields style-hotkeys">
+          <div>Ctrl+Shift+/ or Ctrl+Shift+'</div><div>Stop scroll and allow scrollback</div>
         </div>
       </div>
       <div style="font-style: italic">Some changes will only be applied to new incoming messages</div>
@@ -110,7 +174,7 @@
 // These values are only the initial values and can get overwritten
 var defaultSettings = {
   'channel': 'desertbus',
-  'limit-message-rate': true,
+  'limit-message-rate': false,
   'message-rate': 10,
   'new-messages-on-top': true,
   'smooth-scroll': true,
@@ -123,21 +187,86 @@ var defaultSettings = {
   'unfurl-twitter': true,
   'unfurl-youtube': true,
   'timestamps': '',
+  'font-size': '32px',
+  'hide-cursor': true,
+  'align-messages': false,
    // Make sure to enter full rgb definitions here as the color input fields don't accept other values
   'background-color': '#000000',
   'odd-background-color': '#111111',
   'separator-color': '#444444',
   'text-color': '#eeeeee',
-  'user-color': '#008000',
-  'moderator-color': '#8383f9',
-  'channel-color': '#0d86ff',
   'notice-color': '#eeeeee',
-  'highlight-color': '#731180',
-  'font-size': '32px',
-  'hide-cursor': true,
-  'align-messages': false,
-  'highlight-users': '',
+  'subscription-color': '#808080',
+  'user-color': '#00a000',
+  'moderator-color': '#8383f9',
+  'vip-color': '#80e800',
+
+  'broadcaster-color': '#00ffff',
+  'broadcaster-background-color': '#000050',
+  'broadcaster-users':
+    'DesertBusUpdates,' +
+    'DBVideoStrikeTeam',
+
+  'staff-color': '#00dae8',
+  'staff-users':
+    'Suffix',
+
+  'alert-color': '#ffa500',
+  'alert-background-color': '#600000',
+  'alert-users':
+    'BidBot',
+
+  'bot-color': '#e060a0',
+  'bot-users':
+    'LRRbot,' +
+    'NightBot',
+
+  'notable-color': '#ffd040',
+  'notable-background-color': '#240528',
+  'notable-users':
+    'andrew,' +
+    'Ashton,' +
+    'Bengineering,' +
+    'benjamin_wheeler,' +
+    'billsmom,' +
+    'billsmom1,' +
+    'Dammit_Liz,' +
+    'EscherichiaCole,' +
+    'Emilywhoknits,' +
+    'graham_lrr,' +
+    'ihorner,' +
+    'James_LRR,' +
+    'Kate,' +
+    'Kathleen_LRR,' +
+    'Leels,' +
+    'LunarJade,' +
+    'Meechan_,' +
+    'MLeeLunsford,' +
+    'Mollylele,' +
+    'RayFK,' +
+    'Seabats,' +
+    'SergeYager,' +
+    'Sharkfists,' +
+    'SlyTQ,' +
+    'Stabbytabbycat,' +
+    'sugarsh0t,' +
+    'ThingsOnMyStream,' +
+    'unarmedoracle,' +
+    'Voxlunch,' +
+    'warandpeace,' +
+    'wiggins,' +
+    'WitchyTQ',
+
+  'highlight-color': '#ffff00',
+  'highlight-background-color': '#240528',
+  'highlight-users': 
+    '',
+
+  'block-users':
+    '',
+
   'highlight-keyphrases': '',
+
   'show-subscriptions': true,
   'show-bits': true,
   'show-mod-actions': false,

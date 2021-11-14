@@ -12,10 +12,31 @@ var chat = document.getElementById('chat'),
 	messageQueue = [],
 	lastMessageTimestamp = 0;
 
+const searchParams = new URLSearchParams(window.location.search);
+var getQueryStringValue = function(queryStringName, settingName, settingShowHideID = '', valueSuffix = '') {
+	var queryStringValue = searchParams.get(queryStringName);
+	if ((queryStringValue ?? '') == '') {
+		if ((settingShowHideID ?? '') != '') {
+			document.getElementById(settingShowHideID).classList.remove('hidden');
+		}
+	}
+	else {
+		Settings.set(settingName, queryStringValue + valueSuffix);
+		document.body.style.setProperty('--' + settingName, queryStringValue + valueSuffix);
+	}
+	return Settings.get(settingName);
+}
+
+var getChannel = function() {
+	return getQueryStringValue('channel', 'channel', 'channel-select');
+}
+var getFontSizePx = function() {
+	return getQueryStringValue('fontsizepx', 'font-size', 'font-size-select', 'px');
+}
 
 /** Store settings with a local cache. Storing these variables directly in localStorage would remove the variable's type information **/
 var Settings = function() {
-	var transparentBackgroundKeys = ['notice-color', 'highlight-color', 'channel-color'];
+	var transparentBackgroundKeys = ['notice-color', 'subscription-color'];
 	// Clone default settings so they can be used to reset
 	var settings = Object.assign({}, defaultSettings);
 	// Restore previous settings
@@ -45,7 +66,13 @@ var Settings = function() {
 	}
 }();
 
-var highlightUsers = Settings.get('highlight-users').toLowerCase().split(',').filter((user) => user != ''),
+var broadcasterUsers = Settings.get('broadcaster-users').toLowerCase().split(',').filter((user) => user != ''),
+	staffUsers = Settings.get('staff-users').toLowerCase().split(',').filter((user) => user != ''),
+	alertUsers = Settings.get('alert-users').toLowerCase().split(',').filter((user) => user != ''),
+	botUsers = Settings.get('bot-users').toLowerCase().split(',').filter((user) => user != ''),
+	notableUsers = Settings.get('notable-users').toLowerCase().split(',').filter((user) => user != ''),
+	blockUsers = Settings.get('block-users').toLowerCase().split(',').filter((user) => user != ''),
+	highlightUsers = Settings.get('highlight-users').toLowerCase().split(',').filter((user) => user != ''),
 	highlightKeyphrases = Settings.get('highlight-keyphrases').toLowerCase().split(',').filter((phrase) => phrase != '');
 
 /** Set up chat client **/
@@ -55,7 +82,7 @@ var options = {
 		secure: true,
 		reconnect: true
 	},
-	channels: [ ensureHash(channelFromPath || Settings.get('channel')) ]
+	channels: [ ensureHash(getChannel()) ]
 };
 var client = new tmi.client(options);
 client.addListener('message', handleChat);
@@ -96,12 +123,12 @@ document.getElementById('settings-wheel').addEventListener('click', () => {
 	document.getElementById('settings-wheel').classList.toggle('open');
 });
 // Twitch
-document.getElementById('settings-channel').value = Settings.get('channel');
+document.getElementById('settings-channel').value = getChannel();
 document.getElementById('settings-channel').addEventListener('input', (e) => e.target.value = e.target.value.replaceAll('https://www.twitch.tv/', '').replaceAll('twitch.tv/', ''));
 document.getElementById('settings-channel').form.addEventListener('submit', (e) => {
 	var channel = document.getElementById('settings-channel').value;
 	if (channel != '') {
-		client.leave(ensureHash(Settings.get('channel')));
+		client.leave(ensureHash(getChannel()));
 		// Cross out each channel message before joining new one
 		document.querySelectorAll('#chat > div').forEach((msg) => msg.style.opacity = 0.5);
 		Settings.set('channel', channel);
@@ -110,11 +137,11 @@ document.getElementById('settings-channel').form.addEventListener('submit', (e) 
 	e.preventDefault();
 });
 // Style
-['background-color', 'odd-background-color', 'separator-color', 'text-color', 'user-color', 'moderator-color', 'notice-color', 'highlight-color'].forEach(key => {
+['background-color', 'odd-background-color', 'separator-color', 'text-color', 'notice-color', 'subscription-color', 'user-color', 'moderator-color', 'vip-color', 'staff-color', 'broadcaster-color', 'broadcaster-background-color', 'alert-color', 'alert-background-color', 'bot-color', 'notable-color', 'notable-background-color', 'highlight-color', 'highlight-background-color'].forEach(key => {
 	document.getElementById('settings-' + key).value = Settings.get(key);
 	document.getElementById('settings-' + key).addEventListener('change', (e) => Settings.set(key, e.target.value));
 });
-document.getElementById('settings-font-size').value = Settings.get('font-size').slice(0, -2); // remove pixel unit
+document.getElementById('settings-font-size').value = getFontSizePx().slice(0, -2); // remove pixel unit
 document.getElementById('settings-font-size').addEventListener('change', (e) => Settings.set('font-size', e.target.value + 'px'));
 document.body.classList.toggle('hide-cursor', Settings.get('hide-cursor'));
 document.getElementById('settings-hide-cursor').checked = Settings.get('hide-cursor');
@@ -200,6 +227,36 @@ if (Settings.get('unfurl-twitter')) {
 }
 document.getElementById('settings-timestamps').value = Settings.get('timestamps');
 document.getElementById('settings-timestamps').addEventListener('change', (e) => Settings.set('timestamps', e.target.value));
+document.getElementById('settings-broadcaster-users').value = Settings.get('broadcaster-users');
+document.getElementById('settings-broadcaster-users').addEventListener('input', (e) => {
+	Settings.set('broadcaster-users', e.target.value.toLowerCase());
+	broadcasterUsers = e.target.value.toLowerCase().split(',').filter((user) => user != '');
+});
+document.getElementById('settings-staff-users').value = Settings.get('staff-users');
+document.getElementById('settings-staff-users').addEventListener('input', (e) => {
+	Settings.set('staff-users', e.target.value.toLowerCase());
+	staffUsers = e.target.value.toLowerCase().split(',').filter((user) => user != '');
+});
+document.getElementById('settings-alert-users').value = Settings.get('alert-users');
+document.getElementById('settings-alert-users').addEventListener('input', (e) => {
+	Settings.set('alert-users', e.target.value.toLowerCase());
+	alertUsers = e.target.value.toLowerCase().split(',').filter((user) => user != '');
+});
+document.getElementById('settings-bot-users').value = Settings.get('bot-users');
+document.getElementById('settings-bot-users').addEventListener('input', (e) => {
+	Settings.set('bot-users', e.target.value.toLowerCase());
+	botUsers = e.target.value.toLowerCase().split(',').filter((user) => user != '');
+});
+document.getElementById('settings-notable-users').value = Settings.get('notable-users');
+document.getElementById('settings-notable-users').addEventListener('input', (e) => {
+	Settings.set('notable-users', e.target.value.toLowerCase());
+	notableUsers = e.target.value.toLowerCase().split(',').filter((user) => user != '');
+});
+document.getElementById('settings-block-users').value = Settings.get('block-users');
+document.getElementById('settings-block-users').addEventListener('input', (e) => {
+	Settings.set('block-users', e.target.value.toLowerCase());
+	blockUsers = e.target.value.toLowerCase().split(',').filter((user) => user != '');
+});
 document.getElementById('settings-highlight-users').value = Settings.get('highlight-users');
 document.getElementById('settings-highlight-users').addEventListener('input', (e) => {
 	Settings.set('highlight-users', e.target.value.toLowerCase());
@@ -219,6 +276,14 @@ if (Settings.get('show-fps')) {
 document.body.addEventListener('keydown', (e) => {
 	if ((e.key == 'H' || e.key == 'h') && e.shiftKey && e.ctrlKey) {
 		document.getElementById('curtain').classList.toggle('hidden');
+	} else if ((e.key == 'L' || e.key == 'l') && e.shiftKey && e.ctrlKey) {
+		Settings.reset();
+		location.reload();
+	} else if ((e.key == '?' || e.key == '/' || e.key == '"' || e.key == "'") && e.shiftKey && e.ctrlKey) {
+		document.getElementById('chat-container').classList.toggle('overflow-y-scroll');
+		if (!document.getElementById('chat-container').classList.contains('overflow-y-scroll')) {
+			document.getElementById('chat-container').scrollTop = 0;
+		}
 	} else if ((e.key == 'S' || e.key == 's') && e.shiftKey && e.ctrlKey) {
 		document.getElementById('settings').classList.toggle('hidden');
 		document.getElementById('settings').scrollTop = 0;
@@ -233,32 +298,34 @@ document.body.addEventListener('keydown', (e) => {
 // Continually scroll, in a way to make the comments readable
 var lastFrame = +new Date();
 function scrollUp(now) {
-	if (Settings.get('show-fps')) {
-		frames++;
-	}
-	if (Settings.get('limit-message-rate')) {
-		if (messageQueue.length > 40) {
-			document.getElementById('chat-overload').classList.remove('hidden');
-			// Cull the queue to a reasonable length and update the counter
-			document.getElementById('chat-overload-count').textContent = parseInt(document.getElementById('chat-overload-count').textContent) + messageQueue.splice(40).length;
+	if (!document.getElementById('chat-container').classList.contains('overflow-y-scroll')) {
+		if (Settings.get('show-fps')) {
+			frames++;
 		}
-		if (messageQueue.length < 10 && !document.getElementById('chat-overload').classList.contains('hidden')) {
-			document.getElementById('chat-overload').classList.add('hidden');
-			document.getElementById('chat-overload-count').textContent = "0";
+		if (Settings.get('limit-message-rate')) {
+			if (messageQueue.length > 40) {
+				document.getElementById('chat-overload').classList.remove('hidden');
+				// Cull the queue to a reasonable length and update the counter
+				document.getElementById('chat-overload-count').textContent = parseInt(document.getElementById('chat-overload-count').textContent) + messageQueue.splice(40).length;
+			}
+			if (messageQueue.length < 10 && !document.getElementById('chat-overload').classList.contains('hidden')) {
+				document.getElementById('chat-overload').classList.add('hidden');
+				document.getElementById('chat-overload-count').textContent = "0";
+			}
+			if (messageQueue.length > 0 && now - lastMessageTimestamp > 1000 / Settings.get('message-rate')) {
+				processChat.apply(this, messageQueue.shift());
+				lastMessageTimestamp = now;
+			}
 		}
-		if (messageQueue.length > 0 && now - lastMessageTimestamp > 1000 / Settings.get('message-rate')) {
-			processChat.apply(this, messageQueue.shift());
-			lastMessageTimestamp = now;
+		if (Settings.get('smooth-scroll') && scrollDistance > 0) {
+			// Estimate how far along we are in scrolling in the current scroll reference
+			var currentStep = Settings.get('smooth-scroll-duration') / (now - lastFrame);
+			scrollDistance -= scrollReference / currentStep;
+			scrollDistance = Math.max(scrollDistance, 0);
+			chatContainer.scrollTop = Math.round(Settings.get('new-messages-on-top') ? scrollDistance : chatContainer.scrollHeight - window.innerHeight - scrollDistance);
 		}
+		lastFrame = now;
 	}
-	if (Settings.get('smooth-scroll') && scrollDistance > 0) {
-		// Estimate how far along we are in scrolling in the current scroll reference
-		var currentStep = Settings.get('smooth-scroll-duration') / (now - lastFrame);
-		scrollDistance -= scrollReference / currentStep;
-		scrollDistance = Math.max(scrollDistance, 0);
-		chatContainer.scrollTop = Math.round(Settings.get('new-messages-on-top') ? scrollDistance : chatContainer.scrollHeight - window.innerHeight - scrollDistance);
-	}
-	lastFrame = now;
 	window.requestAnimationFrame(scrollUp);
 }
 window.requestAnimationFrame(scrollUp);
@@ -274,6 +341,10 @@ function handleChat(channel, userstate, message) {
 }
 
 function processChat(channel, userstate, message) {
+	if (blockUsers.indexOf((userstate['display-name'] || userstate.username).toLowerCase()) != -1) {
+		return;
+	}
+
 	try {
 		// If enabled, combine messages instead of adding a new message
 		var id = 'message-' + message.toLowerCase().replace(/[^\p{Letter}]/gu, '');
@@ -363,7 +434,7 @@ function handleSubscription(username, message, userstate) {
 		return;
 	}
 	var chatLine = document.createElement('div');
-	chatLine.className = 'highlight';
+	chatLine.className = 'subscription';
 
 	var subscriptionNotice = document.createElement('div');
 	subscriptionNotice.textContent = userstate['system-msg'].replaceAll('\\s', ' ');
@@ -464,27 +535,48 @@ function createChatLine(userstate, message) {
 		chatLine.appendChild(chatTimestamp);
 	}
 	chatName.className = 'chat-user';
-	if (userstate.mod) {
-		chatName.classList.add('moderator');
-	}
-	if (userstate['message-type'] == 'action') {
-		chatName.classList.add('action');
-	}
 	chatName.textContent = userstate['display-name'] || userstate.username;
-	if (chatName.textContent.toLowerCase() == removeHash(Settings.get('channel')).toLowerCase()) {
-		chatLine.className = 'highlight channel';
-	}
 	chatMessage.innerHTML = formatMessage(message, userstate.emotes);
 	chatMessage.id = userstate.id;
 	if (userstate['user-id']) {
 		chatMessage.dataset.user = userstate['user-id'];
 	}
 
-	if (highlightUsers.indexOf(chatName.textContent.toLowerCase()) != -1) {
-		chatLine.className = 'highlight';
-	}
 	if (highlightKeyphrases.find((phrase) => message.toLowerCase().indexOf(phrase) != -1)) {
 		chatLine.className = 'highlight';
+	}
+
+	// Keep these in priority order, only apply one.
+	if (userstate['message-type'] == 'action') {
+		chatName.classList.add('action');
+	}
+	else if (chatName.textContent.toLowerCase() == removeHash(getChannel()).toLowerCase() || 'broadcaster' in (userstate.badges ?? {}) || broadcasterUsers.indexOf(chatName.textContent.toLowerCase()) != -1) {
+		chatName.classList.add('broadcaster');
+		chatLine.className = 'highlight broadcaster-line';
+	}
+	else if (alertUsers.indexOf(chatName.textContent.toLowerCase()) != -1) {
+		chatName.classList.add('alert');
+		chatLine.className = 'highlight alert-line';
+	}
+	else if (notableUsers.indexOf(chatName.textContent.toLowerCase()) != -1) {
+		chatName.classList.add('notable');
+		chatLine.className = 'highlight notable-line';
+	}
+	else if ('staff' in (userstate.badges ?? {}) || staffUsers.indexOf(chatName.textContent.toLowerCase()) != -1) {
+		chatName.classList.add('staff');
+	}
+	else if (botUsers.indexOf(chatName.textContent.toLowerCase()) != -1) {
+		chatName.classList.add('bot');
+	}
+	else if (highlightUsers.indexOf(chatName.textContent.toLowerCase()) != -1) {
+		chatName.classList.add('highlight');
+		chatLine.className = 'highlight';
+	}
+	else if (userstate.mod) {
+		chatName.classList.add('moderator');
+	}
+	else if ('vip' in (userstate.badges ?? {})) {
+		chatName.classList.add('vip');
 	}
 
 	chatLine.appendChild(chatName);
@@ -502,6 +594,14 @@ function addNotice(message) {
 
 function addMessage(chatLine) {
 	chat.appendChild(chatLine);
+
+	var chatName = chatLine.getElementsByClassName("chat-user");
+	if (chatName.length > 0) {
+		if (chatName[0].offsetWidth < chatName[0].scrollWidth) {
+			chatName[0].setAttribute('title', chatName[0].innerText);
+		}
+	}
+
 	// Calculate height for smooth scrolling
 	scrollReference = scrollDistance += chatLine.scrollHeight;
 	if (!Settings.get('new-messages-on-top') && !Settings.get('smooth-scroll')) {
@@ -509,7 +609,7 @@ function addMessage(chatLine) {
 	}
 
 	// Check whether we can remove some of the oldest messages
-	while (chat.childNodes.length > 2 && chat.scrollHeight - (window.innerHeight + (Settings.get('smooth-scroll') ? scrollDistance : 0)) > chat.firstChild.scrollHeight + chat.childNodes[1].scrollHeight) {
+	while (chat.childNodes.length > 2 && chat.scrollHeight - (window.innerHeight + (Settings.get('smooth-scroll') ? scrollDistance : 0)) > chat.firstChild.scrollHeight + chat.childNodes[1].scrollHeight + (window.innerHeight * 4)) {
 		// Always remove two elements at the same time to prevent switching the odd and even rows
 		chat.firstChild.remove();
 		chat.firstChild.remove();
@@ -607,7 +707,10 @@ function formatLinks(text, originalText) {
 }
 
 function ensureHash(text) {
-	if (!text.startsWith('#')) {
+	if (text == null) {
+		return '';
+	}
+	else if (!text.startsWith('#')) {
 		return '#' + text;
 	}
 	return text;
