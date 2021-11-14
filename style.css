@@ -168,6 +168,13 @@ body.hide-cursor {
   padding-left: 0;
 }
 
+#chat > div.subscription {
+  border-left-color: #808080;
+  border-left-color: var(--subscription-color);
+  background-color: #80808030;
+  background-color: var(--subscription-background-color);
+}
+
 #chat > div.highlight {
   border-left-color: #ffff00;
   border-left-color: var(--highlight-color);
@@ -182,11 +189,25 @@ body.hide-cursor {
   background-color: var(--notice-background-color);
 }
 
-#chat > div.channel {
-  border-left-color: #0d86ff;
-  border-left-color: var(--channel-color);
-  background-color: #0d86ff30;
-  background-color: var(--channel-background-color);
+#chat > div.broadcaster-line {
+  border-left-color: #00ffff;
+  border-left-color: var(--broadcaster-color);
+  background-color: #000050;
+  background-color: var(--broadcaster-background-color);
+}
+
+#chat > div.alert-line {
+  border-left-color: #ffa500;
+  border-left-color: var(--alert-color);
+  background-color: #600000;
+  background-color: var(--alert-background-color);
+}
+
+#chat > div.notable-line {
+  border-left-color: #ffd040;
+  border-left-color: var(--notable-color);
+  background-color: #240528;
+  background-color: var(--notable-background-color);
 }
 
 #chat a {
