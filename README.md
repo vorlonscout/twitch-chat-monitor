@@ -4,6 +4,21 @@ A tool that monitors and displays Twitch chat channels in a bigger font, ideal f
 
 ![Interface example](./img/example.png)
 
+## Personal modifications in this fork
+
+I added back a bunch of stuff that I had hacked into my personal copy of the old Nifty Chat Monitor scripts. These may not be desirable for a general audience.
+
+* Ability to specify "channel" and "fontsizepx" on the query string, so that bookmarks can include them. (Specifying either hides the corresponding controls in Settings.)
+* Properly(? I hope) scale EVERYTHING along with text size changes.
+* VIP username color in Settings.
+* Settings sections and "treat as this type" user lists for Broadcaster/Staff, Bot, and three levels/types of highlights users: Alert (very "loud", used for Desert Bus BidBot), Notable (used for LRR and friend-of-stream folk) , and Highlight (used for personal friends).
+* Blocked (really just hidden/not rendered) user list.
+* Expanded the number of messages retained to roughly 5x the window height.
+* Ctrl+Shift+/ or Ctrl+Shift+' to toggle auto-scroll, and the addition of a scrollbar to allow manual scrollback.
+* Ctrl+Shift+L to reload default settings.
+* Added the Twitch icon as a favicon.
+
+(The rest of this README.md is identical to Glodenox's.)
 
 ## Supported features (non-exhaustive list)
 
